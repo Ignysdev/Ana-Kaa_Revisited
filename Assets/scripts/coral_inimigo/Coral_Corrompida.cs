@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Coral_Corrompida : MonoBehaviour
 {
-    //  //  // DECLARAÇÕES //  //  //
+    //  //  // DECLARAï¿½ï¿½ES //  //  //
     #region
     // INSPECTOR
     [Header("Basico")]
     [SerializeField, Tooltip("Vida total do mob")] int vida = 1;
     [SerializeField, Tooltip("Velocidade do mob")] float velocidade = 2.3f;
-    [SerializeField, Tooltip("Alcance da detecção")] float deteccao = 13f;
+    [SerializeField, Tooltip("Alcance da detecï¿½ï¿½o")] float deteccao = 13f;
     [SerializeField, Tooltip("Tempo entre os movimentos")] float tempoParado = 2f;
-    [SerializeField, Tooltip("Tempo pré ataque")] float tempoAtaque = 1.3f;
+    [SerializeField, Tooltip("Tempo prï¿½ ataque")] float tempoAtaque = 1.3f;
     [SerializeField, Tooltip("Tempo se movendo")] float tempoMovendo = 5f;
-    [SerializeField, Tooltip("Layer do chão.")] LayerMask mask;
+    [SerializeField, Tooltip("Layer do chï¿½o.")] LayerMask mask;
     [SerializeField, Tooltip("Layer dos espinhos.")] LayerMask mask2;
 
 
@@ -26,7 +26,7 @@ public class Coral_Corrompida : MonoBehaviour
     Transform player;
     AudioSource audioSource;
 
-    // VARIÁVEIS AUXILIARES
+    // VARIï¿½VEIS AUXILIARES
     int state = 0;
     bool moving = true;
     bool attack = false;
@@ -39,7 +39,7 @@ public class Coral_Corrompida : MonoBehaviour
 
 
 
-    //  //  // FUNÇÕES PRINCIPAIS //  //  //
+    //  //  // FUNï¿½ï¿½ES PRINCIPAIS //  //  //
     #region
     void Start()
     {
@@ -60,7 +60,7 @@ public class Coral_Corrompida : MonoBehaviour
         // Debug.Log(gameObject.name);
         // Debug.Log(Mathf.Abs(player.position.x - transform.position.x));
         // Debug.Log(Mathf.Abs(player.position.y - transform.position.y));
-        // Código do possuído
+        // Cï¿½digo do possuï¿½do
 
         if (Vector2.Distance(player.transform.position, transform.position) < deteccao)
         {
@@ -135,7 +135,7 @@ public class Coral_Corrompida : MonoBehaviour
         if (life <= 0)
         {
             // Debug.Log("9");
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             rb.isKinematic = true;
             gameObject.tag = "Untagged";
             gameObject.layer = 8;
@@ -189,7 +189,7 @@ public class Coral_Corrompida : MonoBehaviour
         }
 
 
-        // Movimentação
+        // Movimentaï¿½ï¿½o
         switch (state)
         {
             case 0:
@@ -197,7 +197,7 @@ public class Coral_Corrompida : MonoBehaviour
                 audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Idle corrompida");
                 audioSource.loop = true;
                 audioSource.Play();
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
                 break;
             case 1:
                 anim.SetInteger("State", 1);
@@ -205,13 +205,13 @@ public class Coral_Corrompida : MonoBehaviour
                 audioSource.loop = true;
                 audioSource.Play();
                 if (!death)
-                    rb.velocity = new Vector2(velocidade, rb.velocity.y);
+                    rb.linearVelocity = new Vector2(velocidade, rb.linearVelocity.y);
                 break;
             case 2:
                 anim.SetInteger("State", 2);
                 
                 if (!death && bote)
-                    rb.velocity = new Vector2(velocidade * 5, rb.velocity.y);
+                    rb.linearVelocity = new Vector2(velocidade * 5, rb.linearVelocity.y);
                 break;
         }
 
@@ -221,7 +221,7 @@ public class Coral_Corrompida : MonoBehaviour
 
 
 
-    //  //  // FUNÇÕES AUXILIARES //  //  //
+    //  //  // FUNï¿½ï¿½ES AUXILIARES //  //  //
     #region
     void Flip()
     {

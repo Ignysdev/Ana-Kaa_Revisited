@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class PorcoEspinho : MonoBehaviour
 {
-    //  //  // DECLARAÇÕES //  //  //
+    //  //  // DECLARAï¿½ï¿½ES //  //  //
     #region
     // INSPECTOR
     [Header("Basico")]
     [SerializeField, Tooltip("Vida total do mob")] int vida = 1;
     [SerializeField, Tooltip("Velocidade do mob")] float velocidade = 1.8f;
     [SerializeField, Tooltip("0 - Parado; 1 - Andando; 2 - Correndo"), Range(0, 2)] int estado = 0;
-    [SerializeField, Tooltip("Possuído ou não?")] bool possuido = false;
-    [SerializeField, Tooltip("Alcance da detecção")] float deteccao = 5f;
-    [SerializeField, Tooltip("Layer do chão.")] LayerMask mask;
+    [SerializeField, Tooltip("Possuï¿½do ou nï¿½o?")] bool possuido = false;
+    [SerializeField, Tooltip("Alcance da detecï¿½ï¿½o")] float deteccao = 5f;
+    [SerializeField, Tooltip("Layer do chï¿½o.")] LayerMask mask;
     [SerializeField, Tooltip("Layer dos espinhos.")] LayerMask mask2;
 
 
@@ -24,7 +24,7 @@ public class PorcoEspinho : MonoBehaviour
     Rigidbody2D rb;
     Transform player;
 
-    // VARIÁVEIS AUXILIARES
+    // VARIï¿½VEIS AUXILIARES
     int life;
     bool death = false;
     [SerializeField] bool detected = false;
@@ -33,7 +33,7 @@ public class PorcoEspinho : MonoBehaviour
 
 
 
-    //  //  // FUNÇÕES PRINCIPAIS //  //  //
+    //  //  // FUNï¿½ï¿½ES PRINCIPAIS //  //  //
     #region
     void Start()
     {
@@ -48,7 +48,7 @@ public class PorcoEspinho : MonoBehaviour
 
     void Update()
     {
-        // Código do possuído
+        // Cï¿½digo do possuï¿½do
         if (possuido)
         {
 
@@ -95,7 +95,7 @@ public class PorcoEspinho : MonoBehaviour
         // Check de vida
         if(life <= 0)
         {
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             rb.isKinematic = true;
             gameObject.tag = "Untagged";
             gameObject.layer = 8;
@@ -146,17 +146,17 @@ public class PorcoEspinho : MonoBehaviour
         }
 
 
-        // Movimentação
+        // Movimentaï¿½ï¿½o
         switch (estado)
         {
             case 0:
                 anim.SetInteger("State", 0);
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
                 break;
             case 1:
                 anim.SetInteger("State", 1);
                 if(!death)
-                    rb.velocity = new Vector2(velocidade, rb.velocity.y);
+                    rb.linearVelocity = new Vector2(velocidade, rb.linearVelocity.y);
                 break;
             case 2:
                 anim.SetInteger("State", 2);
@@ -164,7 +164,7 @@ public class PorcoEspinho : MonoBehaviour
                 audioSource.loop = true;
                 audioSource.Play();
                 if (!death)
-                    rb.velocity = new Vector2(velocidade * 2, rb.velocity.y);
+                    rb.linearVelocity = new Vector2(velocidade * 2, rb.linearVelocity.y);
                 break;
         }
     }
@@ -172,7 +172,7 @@ public class PorcoEspinho : MonoBehaviour
 
 
 
-    //  //  // FUNÇÕES AUXILIARES //  //  //
+    //  //  // FUNï¿½ï¿½ES AUXILIARES //  //  //
     #region
     void Flip()
     {

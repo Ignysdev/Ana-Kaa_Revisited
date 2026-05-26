@@ -8,35 +8,35 @@ using UnityEngine.SceneManagement;
 public class movimento : MonoBehaviour
 {
    
-    // ANOTAÇÕES
+    // ANOTAï¿½ï¿½ES
     /* 
-        Todos os códigos considerados como importantes e/ou reutilizáveis
-    foram comentados e guardados no fim do código para caso haja necessidade
+        Todos os cï¿½digos considerados como importantes e/ou reutilizï¿½veis
+    foram comentados e guardados no fim do cï¿½digo para caso haja necessidade
     de usar eles depois.
 
-        Existem marcações no código indicando onde estavam estes códigos.
+        Existem marcaï¿½ï¿½es no cï¿½digo indicando onde estavam estes cï¿½digos.
     - Iggy
     */
     
-    //  //  // DECLARAÇÕES //  //  //
+    //  //  // DECLARAï¿½ï¿½ES //  //  //
     #region 
     // INSPECTOR
     [Header("Movimento geral")]
     [SerializeField, Tooltip("Velocidade do movimento"), Range(0.01f, 7f)] float speed = 1.7f;
-    [SerializeField, Tooltip("suavização do movimento"), Range(0, 0.3f)] float smooth = .1f;
-    [SerializeField, Tooltip("Layer que representa o chão")] LayerMask mask;
-    [SerializeField, Tooltip("Objeto vazio que detecta o chão")] public Transform groundCheck;
-    [SerializeField, Tooltip("Tamanho do detector do chão")] float detectorChao = .2f;
+    [SerializeField, Tooltip("suavizaï¿½ï¿½o do movimento"), Range(0, 0.3f)] float smooth = .1f;
+    [SerializeField, Tooltip("Layer que representa o chï¿½o")] LayerMask mask;
+    [SerializeField, Tooltip("Objeto vazio que detecta o chï¿½o")] public Transform groundCheck;
+    [SerializeField, Tooltip("Tamanho do detector do chï¿½o")] float detectorChao = .2f;
 
     [Header("Pulo")]
-    [SerializeField, Tooltip("Força do movimento")] float jumpForce = 16;
-    [SerializeField, Tooltip("Suavização no ar (porcentagem em relação à suavização padrão)")] float airSmooth = 3;
-    [SerializeField, Tooltip("Força do corte de pulo (soltar botão)"), Range(0, 1)] float jumpCutHeight = .87f;
-    [SerializeField, Tooltip("Tempo em segundos de imprecisão permitido"), Range(0, .7f)] float toleranciaPulo = .2f;
+    [SerializeField, Tooltip("Forï¿½a do movimento")] float jumpForce = 16;
+    [SerializeField, Tooltip("Suavizaï¿½ï¿½o no ar (porcentagem em relaï¿½ï¿½o ï¿½ suavizaï¿½ï¿½o padrï¿½o)")] float airSmooth = 3;
+    [SerializeField, Tooltip("Forï¿½a do corte de pulo (soltar botï¿½o)"), Range(0, 1)] float jumpCutHeight = .87f;
+    [SerializeField, Tooltip("Tempo em segundos de imprecisï¿½o permitido"), Range(0, .7f)] float toleranciaPulo = .2f;
 
     [Header("Dash")]
     [SerializeField, Tooltip("Velocidade do dash"), Range(1, 5)] float forcaDash = 1.37f;
-    [SerializeField, Tooltip("Distância percorrida pelo dash"), Range(0, 10)] float distanciaDash = 4f;
+    [SerializeField, Tooltip("Distï¿½ncia percorrida pelo dash"), Range(0, 10)] float distanciaDash = 4f;
     [SerializeField, Tooltip("Tempo de recarga do dash em segundos"), Range(0, 10)] float cooldownDash = 1f;
 
     [Header("Tiro")]
@@ -47,47 +47,47 @@ public class movimento : MonoBehaviour
     // OBJETOS EXTERNOS
     Collider2D attack;          // Colisor do ataque
     Rigidbody2D rb;             // RigidBody deste objeto
-    Animator animin;// Componente de animação
+    Animator animin;// Componente de animaï¿½ï¿½o
     AudioSource audioSource;
-    //Collider2D trig;            // Trigger para atravesar o chão
+    //Collider2D trig;            // Trigger para atravesar o chï¿½o
     BoxCollider2D col;      // Colisor do objeto
     Transform deathObj;
     Cutscenemanagement cutscene;
 
-    // VARIÁVEIS AUXILIARES
+    // VARIï¿½VEIS AUXILIARES
         // movimento
     bool ladoDir = true;    // Virado para a direita?
     bool ativajoy = true;
         // pulo
-    bool liberaChao = false;    // Está em contato com o chão?
-    bool jumpCut = false;       // Botão pulo pressionado ainda?
-    float prePulo, puloPos;     // Tempo de imprecisão do pulo
-    float puloPosParede;        // Tempo de imprecisão
-    public bool trig = false;   // Trigger para atravessar o chão
+    bool liberaChao = false;    // Estï¿½ em contato com o chï¿½o?
+    bool jumpCut = false;       // Botï¿½o pulo pressionado ainda?
+    float prePulo, puloPos;     // Tempo de imprecisï¿½o do pulo
+    float puloPosParede;        // Tempo de imprecisï¿½o
+    public bool trig = false;   // Trigger para atravessar o chï¿½o
 
         // dash
     public bool dash = false;   // Dash liberado?
-    bool dashing = false;       // Está fazendo dash?
-    Vector3 dashStartPos;       // Posição de início do dash
-    Vector2 dir;                // Direção do dash
-    float dd;                   // Distância à percorrer
-    bool dashTrig;              // Auxiliar de finalização
+    bool dashing = false;       // Estï¿½ fazendo dash?
+    Vector3 dashStartPos;       // Posiï¿½ï¿½o de inï¿½cio do dash
+    Vector2 dir;                // Direï¿½ï¿½o do dash
+    float dd;                   // Distï¿½ncia ï¿½ percorrer
+    bool dashTrig;              // Auxiliar de finalizaï¿½ï¿½o
 
         // outros
-    static Vector2 respawn;                 // Posição de respawn
-    private Vector3 vel = Vector3.zero;     // Burocracia de código
+    static Vector2 respawn;                 // Posiï¿½ï¿½o de respawn
+    private Vector3 vel = Vector3.zero;     // Burocracia de cï¿½digo
     private Vector3 vel2 = Vector3.zero;
     bool alive = true;
     bool dying = false;
     bool anima_andar;
     #endregion
 
-    //  //  // FUNÇÕES PRINCIPAIS //  //  //
+    //  //  // FUNï¿½ï¿½ES PRINCIPAIS //  //  //
     #region
 
     void Start()
     {
-        //  Coleta todos os componentes necessários.
+        //  Coleta todos os componentes necessï¿½rios.
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Correndo grama");
         rb = GetComponent<Rigidbody2D>();
@@ -112,7 +112,7 @@ public class movimento : MonoBehaviour
         transform.position = respawn;
         attack.enabled = false;
 
-        // Animação do começo
+        // Animaï¿½ï¿½o do comeï¿½o
         StartCoroutine(Death(true));
     }
 
@@ -121,17 +121,17 @@ public class movimento : MonoBehaviour
     {
         
        
-        animin.SetFloat("Yvel", rb.velocity.y);
+        animin.SetFloat("Yvel", rb.linearVelocity.y);
         float tiro_fim = Mathf.FloorToInt(tiro_time);
         
         //GameObject.Find("tirobt").GetComponent<Image>().fillAmount = tiro_fim /  tiro_limite;
-        // Cronômetros
+        // Cronï¿½metros
         prePulo -= Time.fixedDeltaTime; puloPos -= Time.fixedDeltaTime; puloPosParede -= Time.fixedDeltaTime;
 
-        // COLISOR CHÃO
-        if(Physics2D.OverlapCircle(groundCheck.position, detectorChao, mask))   //  Cria um círculo de colisão com base nos parámetros predefinidos.
+        // COLISOR CHï¿½O
+        if(Physics2D.OverlapCircle(groundCheck.position, detectorChao, mask))   //  Cria um cï¿½rculo de colisï¿½o com base nos parï¿½metros predefinidos.
         {
-            //  Se no chão seta a variável e ativa a tolerância de pulo.
+            //  Se no chï¿½o seta a variï¿½vel e ativa a tolerï¿½ncia de pulo.
             if(liberaChao != true)
             {
                 audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Queda grama");
@@ -141,7 +141,7 @@ public class movimento : MonoBehaviour
             }
             liberaChao = true;
             
-            if (rb.velocity.y < 0.3f)
+            if (rb.linearVelocity.y < 0.3f)
             {
                 animin.SetBool("jumping", false);
             }
@@ -151,14 +151,14 @@ public class movimento : MonoBehaviour
         else
         {
 
-            //  Se não, seta variável.
+            //  Se nï¿½o, seta variï¿½vel.
             liberaChao = false;
         }
 
         // COLISOR PAREDE
-        if (Physics2D.OverlapCircle(attack.transform.position, detectorChao, mask))   //  Cria um círculo de colisão com base nos parámetros predefinidos.
+        if (Physics2D.OverlapCircle(attack.transform.position, detectorChao, mask))   //  Cria um cï¿½rculo de colisï¿½o com base nos parï¿½metros predefinidos.
         {
-            //  Se na parede ativa a tolerância de pulo.
+            //  Se na parede ativa a tolerï¿½ncia de pulo.
             puloPosParede = toleranciaPulo;
         } 
 
@@ -171,8 +171,8 @@ public class movimento : MonoBehaviour
             audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Pulo");
             audioSource.loop = false;
             audioSource.Play();
-            //  Caso tenha apertado em pulo e estado no chão em um tempo menor que a tolerancia de pulo, pule e ajuste as variáveis.
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            //  Caso tenha apertado em pulo e estado no chï¿½o em um tempo menor que a tolerancia de pulo, pule e ajuste as variï¿½veis.
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             puloPos = 0;
             prePulo = 0;
             liberaChao = false;
@@ -181,14 +181,14 @@ public class movimento : MonoBehaviour
         // PULO NA PAREDE
         if (prePulo > 0 && puloPosParede > 0 && puloPos <= 0 && alive)
         {
-            //  Caso tenha apertado em pulo e estado na parede em um tempo menor que a tolerancia de pulo, pule na direção oposta da parede e ajuste as variáveis.
+            //  Caso tenha apertado em pulo e estado na parede em um tempo menor que a tolerancia de pulo, pule na direï¿½ï¿½o oposta da parede e ajuste as variï¿½veis.
             if (ladoDir)
             {
-                rb.velocity = new Vector2(-jumpForce, jumpForce  /1.3f);
+                rb.linearVelocity = new Vector2(-jumpForce, jumpForce  /1.3f);
             }
             else
             {
-                rb.velocity = new Vector2(jumpForce, jumpForce / 1.3f);
+                rb.linearVelocity = new Vector2(jumpForce, jumpForce / 1.3f);
             }
             Flip();
             //StartCoroutine(movimentoParede());
@@ -196,11 +196,11 @@ public class movimento : MonoBehaviour
             prePulo = 0;
         }
 
-            // Suavização no ar
-        float s = smooth;   //  Variável de suavização usada no código.
+            // Suavizaï¿½ï¿½o no ar
+        float s = smooth;   //  Variï¿½vel de suavizaï¿½ï¿½o usada no cï¿½digo.
         if (!liberaChao)
         {
-            // Se estiver no ar, atualize suavização.
+            // Se estiver no ar, atualize suavizaï¿½ï¿½o.
             s *= airSmooth;
         }
 
@@ -229,18 +229,18 @@ public class movimento : MonoBehaviour
 
             if (Mathf.Abs(joystick.horizontal) > 2.75f)
             {
-                velocidade = new Vector2(5 * sign * speed, rb.velocity.y);   //  Vetor da velocidade.
+                velocidade = new Vector2(5 * sign * speed, rb.linearVelocity.y);   //  Vetor da velocidade.
             }
             else
             {
-                velocidade = new Vector2(1.5f * sign * speed, rb.velocity.y);   //  Vetor da velocidade.
+                velocidade = new Vector2(1.5f * sign * speed, rb.linearVelocity.y);   //  Vetor da velocidade.
             }
-            rb.velocity = Vector3.SmoothDamp(rb.velocity, velocidade, ref vel, s);  //  Aplicação da suavização.
+            rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, velocidade, ref vel, s);  //  Aplicaï¿½ï¿½o da suavizaï¿½ï¿½o.
         }
         else
         {
             if(alive)
-            rb.velocity = Vector3.SmoothDamp(rb.velocity, new Vector3(0, rb.velocity.y), ref vel, s);  //  Aplicação da suavização.
+            rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, new Vector3(0, rb.linearVelocity.y), ref vel, s);  //  Aplicaï¿½ï¿½o da suavizaï¿½ï¿½o.
         }
        if(joystick.horizontal == 0 && anima_andar == true || liberaChao == false && anima_andar == true)
         {
@@ -249,19 +249,19 @@ public class movimento : MonoBehaviour
             anima_andar = false;
         }
             // Corte de pulo
-        if (jumpCut && rb.velocity.y > 0 && alive)
+        if (jumpCut && rb.linearVelocity.y > 0 && alive)
         {
             // Se parou de clicar em pular e subindo, diminua velocidade.
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * jumpCutHeight);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutHeight);
         }
 
         // LIMITE QUEDA
-        if(rb.velocity.y < -20)
+        if(rb.linearVelocity.y < -20)
         {
-            rb.velocity = new Vector2(rb.velocity.x, -20);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -20);
         }
 
-        //•1 
+        //ï¿½1 
 
         // DASH
         Dash(true);
@@ -284,7 +284,7 @@ public class movimento : MonoBehaviour
         // VIRAR PERSONAGEM
         if (joystick.horizontal > 1 /*&& ativajoy == true*/)
         {
-            //  Se estiver andando para a direita rode a animação.
+            //  Se estiver andando para a direita rode a animaï¿½ï¿½o.
             animin.SetBool("walking", true);
             if (!ladoDir)
             {
@@ -294,7 +294,7 @@ public class movimento : MonoBehaviour
         }
         else if (joystick.horizontal < -1 /*&& ativajoy == true*/)
         {
-            //  Se estiver andando para a esquerda rode a animação.
+            //  Se estiver andando para a esquerda rode a animaï¿½ï¿½o.
             animin.SetBool("walking", true);
             if (ladoDir)
             {
@@ -304,7 +304,7 @@ public class movimento : MonoBehaviour
         }
         else
         {
-            //  Se estiver parado, pare a animação de andar.
+            //  Se estiver parado, pare a animaï¿½ï¿½o de andar.
             animin.SetBool("walking", false);
         }
     }
@@ -314,7 +314,7 @@ public class movimento : MonoBehaviour
     #region
     private void Flip()
     {
-        //  Mude o lado na variável.
+        //  Mude o lado na variï¿½vel.
         ladoDir = !ladoDir;
 
         //  Muda o lado do objeto usando escala.
@@ -328,16 +328,16 @@ public class movimento : MonoBehaviour
     {
         if (on)
         {
-            //  Se apertado, atualiza variável de apertando.
+            //  Se apertado, atualiza variï¿½vel de apertando.
             jumpCut = false;
             if (joystick.vertical > -2.75f)
             {
-                //  Se não estiver olhando para baixo pule antes da tolerância acabar.
+                //  Se nï¿½o estiver olhando para baixo pule antes da tolerï¿½ncia acabar.
                 prePulo = toleranciaPulo;
             }
             else
             {
-                //  Se olhando para baixo, lige colisor que desativa chão.
+                //  Se olhando para baixo, lige colisor que desativa chï¿½o.
                 if (GameObject.FindGameObjectWithTag("chao_atravessavel"))
                 {
                     GameObject.FindGameObjectWithTag("chao_atravessavel").GetComponent<Collider2D>().usedByEffector = false;
@@ -353,7 +353,7 @@ public class movimento : MonoBehaviour
             //  Se soltado, interrompa pulo.
             jumpCut = true;
         }
-        //•2
+        //ï¿½2
     }
 
     public void Ataque_som1()
@@ -375,7 +375,7 @@ public class movimento : MonoBehaviour
 
     public void Ataque()
     {
-        //  Se botão de ataque apertado, rode animação e ligue colisos de ataque.
+        //  Se botï¿½o de ataque apertado, rode animaï¿½ï¿½o e ligue colisos de ataque.
         attack.enabled = true;
         animin.SetBool("attacking", true);
         animin.SetBool("jumping", false);
@@ -395,7 +395,7 @@ public class movimento : MonoBehaviour
 
     void AtaqueFim(string sonio)
     {
-        //  Quando ataque terminado, desligue colisor e animação.
+        //  Quando ataque terminado, desligue colisor e animaï¿½ï¿½o.
         animin.SetBool("attacking", false);
         attack.enabled = false;
     }
@@ -405,7 +405,7 @@ public class movimento : MonoBehaviour
     {
         if (!mode && dash)
         {
-            //  Se em início, ligue dashing, desligue variável interferente, ative cooldown e lembre a posição inicial.
+            //  Se em inï¿½cio, ligue dashing, desligue variï¿½vel interferente, ative cooldown e lembre a posiï¿½ï¿½o inicial.
             dash = false;
             dashing = true;
             jumpCut = false;
@@ -416,7 +416,7 @@ public class movimento : MonoBehaviour
 
             if (Mathf.Abs(joystick.horizontal) + Mathf.Abs(joystick.vertical) > 2)
             {
-                //  Se joystick estiver apontando, pegue direção e guarde se na distância do dash tem obstáculos.
+                //  Se joystick estiver apontando, pegue direï¿½ï¿½o e guarde se na distï¿½ncia do dash tem obstï¿½culos.
                 dir = Vector2.ClampMagnitude(new Vector2(joystick.horizontal, joystick.vertical), 1);
                 //*1*
                 //hit = Physics2D.CapsuleCast(new Vector2(transform.position.x, transform.position.y) + col.offset, col.size, col.direction, 0, new Vector2(joystick.horizontal, joystick.vertical), distanciaDash + 1.3f);
@@ -424,7 +424,7 @@ public class movimento : MonoBehaviour
             }
             else if (ladoDir)
             {
-                //  Se não e estiver virado para a direita, use direção direita e guarde se na distância do dash tem obstáculos.
+                //  Se nï¿½o e estiver virado para a direita, use direï¿½ï¿½o direita e guarde se na distï¿½ncia do dash tem obstï¿½culos.
                 dir = Vector2.right;
                 //*2*
                 //hit = Physics2D.CapsuleCast(new Vector2(transform.position.x, transform.position.y) + col.offset, col.size, col.direction, 0, Vector2.right, distanciaDash + 1.3f);
@@ -432,7 +432,7 @@ public class movimento : MonoBehaviour
             }
             else
             {
-                //  Se não, use direção esquerda e guarde se na distância do dash tem obstáculos.
+                //  Se nï¿½o, use direï¿½ï¿½o esquerda e guarde se na distï¿½ncia do dash tem obstï¿½culos.
                 dir = Vector2.left;
                 //*3*
                 //hit = Physics2D.CapsuleCast(new Vector2(transform.position.x, transform.position.y) + col.offset, col.size, col.direction, 0, Vector2.left, distanciaDash + 1.3f);
@@ -441,51 +441,51 @@ public class movimento : MonoBehaviour
 
             if (hit)
             {
-                //  Se tiver obstáculos, dash até o obstáculo.
+                //  Se tiver obstï¿½culos, dash atï¿½ o obstï¿½culo.
                 dd = hit.distance - 1.3f;
             }
             else
             {
-                //  Se sem obstáculos, dash até distância máxima.
+                //  Se sem obstï¿½culos, dash atï¿½ distï¿½ncia mï¿½xima.
                 dd = distanciaDash;
             }
 
             if (joystick.vertical < -3 || !liberaChao)
             {
-                //  Se apontado para o chão ou não estiver no chão, permitir atravessar.
+                //  Se apontado para o chï¿½o ou nï¿½o estiver no chï¿½o, permitir atravessar.
                 //trig = true;
                 if (liberaChao)
                 {
-                    //  Se no chão, regular força e atualizar variável.
+                    //  Se no chï¿½o, regular forï¿½a e atualizar variï¿½vel.
                     dd += 1.3f;
                     liberaChao = false;
                 }
             }
             else if (joystick.vertical < 0 && liberaChao)
             {
-                //  Se no chão e apontando para o chão, ajusta direção para puramente horizontal.
+                //  Se no chï¿½o e apontando para o chï¿½o, ajusta direï¿½ï¿½o para puramente horizontal.
                 dir = Vector2.ClampMagnitude(new Vector2(joystick.horizontal * 5, 0), 1);
             }
         }
         else // ---------------------------------------------------------------------------------------------------------------------------------------
         {
-            //  Após início
+            //  Apï¿½s inï¿½cio
             if (dashing && Vector2.Distance(transform.position, dashStartPos) < dd)
             {
-                //  Se não alcançou o destino do dash, continue.
-                rb.velocity = Vector2.zero;
-                rb.velocity = new Vector2(dir.x * jumpForce * forcaDash, dir.y * jumpForce * forcaDash);
+                //  Se nï¿½o alcanï¿½ou o destino do dash, continue.
+                rb.linearVelocity = Vector2.zero;
+                rb.linearVelocity = new Vector2(dir.x * jumpForce * forcaDash, dir.y * jumpForce * forcaDash);
                 dashTrig = true;
             }
             else
             {
                 if (dashTrig && Vector2.Distance(transform.position, dashStartPos) > dd - .2f)
                 {
-                    //  Se dash acabou e passou 0.2 do alvo, desligue atravesar o chão e desacelere.
+                    //  Se dash acabou e passou 0.2 do alvo, desligue atravesar o chï¿½o e desacelere.
                     //StartCoroutine(LigarChao(false));
                     dashTrig = false;
                     jumpCut = true;
-                    rb.velocity = new Vector2(rb.velocity.x * .73f, rb.velocity.y * .87f);
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x * .73f, rb.linearVelocity.y * .87f);
                 }
                 //  Atualize status do dash
                 dashing = false;
@@ -494,10 +494,10 @@ public class movimento : MonoBehaviour
     }
 
 
-    //•3
+    //ï¿½3
 
 
-    //•4
+    //ï¿½4
     #endregion
 
     //  //  // PROCEDIMENTOS DO UNITY //  //  //
@@ -510,7 +510,7 @@ public class movimento : MonoBehaviour
             // Se atingido fora do dash, respawne.
             animin.SetTrigger("death");
             rb.gravityScale = 0;
-            rb.velocity = ((-collision.transform.position + transform.position).normalized*6);
+            rb.linearVelocity = ((-collision.transform.position + transform.position).normalized*6);
             StartCoroutine(Death(false));
         }
         if (collision.gameObject.CompareTag("music_fade_trigger"))
@@ -525,7 +525,7 @@ public class movimento : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Respawn"))
         {
-            // Se encostou em checkpoint, dê o checkpoint.
+            // Se encostou em checkpoint, dï¿½ o checkpoint.
             StartCoroutine(Checkpoint());
         }
 
@@ -543,7 +543,7 @@ public class movimento : MonoBehaviour
             // Se atingido fora do dash, respawne.
             animin.SetTrigger("death");
             rb.gravityScale = 0;
-            rb.velocity = ((-collision.transform.position + transform.position).normalized*6);
+            rb.linearVelocity = ((-collision.transform.position + transform.position).normalized*6);
             StartCoroutine(Death(false));
         }
     }
@@ -551,7 +551,7 @@ public class movimento : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        //  Após passar do chão, ligue ele de novo.
+        //  Apï¿½s passar do chï¿½o, ligue ele de novo.
         //StartCoroutine(LigarChao(true));
     }
     #endregion
@@ -576,7 +576,7 @@ public class movimento : MonoBehaviour
 
     IEnumerator Checkpoint()
     {
-        //  Espere até estar no chão e ative o checkpoint.
+        //  Espere atï¿½ estar no chï¿½o e ative o checkpoint.
         yield return new WaitUntil(()=> liberaChao);
         respawn = transform.position;
         PlayerPrefs.SetFloat("x", respawn.x);
@@ -604,7 +604,7 @@ public class movimento : MonoBehaviour
     {
         if (!instantaneo)
         {
-            //  Se não for instantâneo, espere e desligue.
+            //  Se nï¿½o for instantï¿½neo, espere e desligue.
             yield return new WaitForSeconds(0.5f);
             if (GameObject.FindGameObjectWithTag("chao_atravessavel"))
             {
@@ -615,7 +615,7 @@ public class movimento : MonoBehaviour
         }
         else
         {
-            //  Se for intantâneo, desligue.
+            //  Se for intantï¿½neo, desligue.
             if (GameObject.FindGameObjectWithTag("chao_atravessavel"))
             {
                 GameObject.FindGameObjectWithTag("chao_atravessavel").GetComponent<Collider2D>().usedByEffector = true;
@@ -662,7 +662,7 @@ public class movimento : MonoBehaviour
 
             while (Time.time < t)
             {
-                rb.velocity = Vector3.SmoothDamp(rb.velocity, new Vector3(0, rb.velocity.y), ref vel, .05f);
+                rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, new Vector3(0, rb.linearVelocity.y), ref vel, .05f);
                 deathObj.position = Vector3.SmoothDamp(deathObj.position, d, ref vel2, .27f);
                 yield return null;
             }
@@ -677,16 +677,16 @@ public class movimento : MonoBehaviour
     
     #endregion
 
-    //  //  // TESTE DE CÓDIGOS //  //  //
+    //  //  // TESTE DE Cï¿½DIGOS //  //  //
     #region
     
 
     #endregion
 }
 
-//  //  // CÓDIGO MORTO //  //  //
+//  //  // Cï¿½DIGO MORTO //  //  //
 #region
-//•1
+//ï¿½1
 /*/transform.Translate(new Vector2(joystick.horizontal*direcao * Time.deltaTime,0));
 //Debug.Log(joystick.horizontal);
  if (Input.touchCount == 1)
@@ -732,13 +732,13 @@ public class movimento : MonoBehaviour
  }
 */
 
-//•2
+//ï¿½2
 /*Instantiate(tiroObj, transform.position, Quaternion.identity); 
  contagem = 0;
  tempo = 0.5f;
 */
 
-//•3
+//ï¿½3
 /*private void OnCollisionEnter2D(Collision2D collision)
 {
     if (collision.gameObject.CompareTag("chao"))
@@ -748,17 +748,17 @@ public class movimento : MonoBehaviour
     }
 } //*/
 
-//•4
+//ï¿½4
 /*public void dash1()
     {
-        //int layerMask = 0 << 3;                                                                             // Layer de colisão
+        //int layerMask = 0 << 3;                                                                             // Layer de colisï¿½o
 
         //player.transform.GetChild(1).transform.localPosition = new Vector2(dash, 0);                      // Alvo do dash
         //Debug.DrawRay(player.transform.position, player.transform.right, Color.cyan);
         //Debug.DrawLine(player.transform.position, player.transform.GetChild(1).transform.position, Color.red);
         RaycastHit2D hit;
         Vector2 dashposition;
-        hit = Physics2D.Raycast(transform.position, new Vector2(joystick.horizontal,joystick.vertical),3);      // testar se tem colisão
+        hit = Physics2D.Raycast(transform.position, new Vector2(joystick.horizontal,joystick.vertical),3);      // testar se tem colisï¿½o
 
         dashposition = hit.point;
         Vector2 dashoposicao = Vector2.ClampMagnitude(-(dashposition),1);

@@ -19,7 +19,7 @@ public class boss_projetil : MonoBehaviour
         transform.rotation = Quaternion.Euler(-180, 0, angulo);
         Vector3 movimento = new Vector3(-16.5f, 0.0f, 0);
         movimento = transform.TransformDirection(movimento);
-        rb.velocity = (movimento);
+        rb.linearVelocity = (movimento);
         
 
     }
