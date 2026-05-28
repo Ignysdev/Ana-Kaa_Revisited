@@ -13,4 +13,4 @@ Roteirista e gestor de projeto: Anselmo (https://github.com/Akashic002)
 
 Artista auxiliar: Victor Hugo (instagram: @vituruguu)
 
-Revisitação: Bruno Simões (Email: ignysdev@gmail.com).
+Revisitação: Bruno Simões (Email: ignysdev@gmail.com) e Victor Hugo (instagram: @vituruguu).
