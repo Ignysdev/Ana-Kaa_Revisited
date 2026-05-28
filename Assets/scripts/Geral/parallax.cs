@@ -27,7 +27,7 @@ public class parallax : MonoBehaviour
         random = 1 + Random.Range(-randomFactor/2, randomFactor/2)/100;
         cam = Camera.main.transform;
         //startPos = transform.position/2;
-        Debug.Log(random);
+        //Debug.Log(random);
     }
 
     void Update()

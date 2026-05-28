@@ -13,7 +13,7 @@ public class coral_base : MonoBehaviour
     void Start()
     {
         coral_audio = GetComponent<AudioSource>();
-        coral_audio.clip =  Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Mato idle");
+        coral_audio.clip =  Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/Mato_idle");
         coral_audio.loop = true;
         coral_audio.Play();
         chara = GameObject.FindGameObjectWithTag("Player");
@@ -43,13 +43,13 @@ public class coral_base : MonoBehaviour
     {
         if (Animin.GetBool("primeiro_ataque") == false)
         {
-            coral_audio.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Saindo do mato + atack simples");
+            coral_audio.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/Saindo_do_mato___atack_simples");
             coral_audio.loop = false;
             coral_audio.Play();
         }
         if (Animin.GetBool("primeiro_ataque") == true)
         {
-            coral_audio.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/atack simples");
+            coral_audio.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/atack_simples");
             coral_audio.loop = false;
             coral_audio.Play();
         }
@@ -58,14 +58,14 @@ public class coral_base : MonoBehaviour
     }
     void fimdeataque()
     {
-        coral_audio.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/idle");
+        coral_audio.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/idle");
         coral_audio.loop = true;
         coral_audio.Play();
         Animin.SetBool("ataque", false);
     }
     void dead()
     {
-        coral_audio.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Morrendo");
+        coral_audio.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/Morrendo");
         coral_audio.loop = false;
         coral_audio.Play();
         morto = true;

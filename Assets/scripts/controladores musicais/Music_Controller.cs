@@ -23,7 +23,7 @@ public class Music_Controller : MonoBehaviour
         }
         audiosource = controlador[0].GetComponent<AudioSource>();
 
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/fase1 loop completo");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/fase1_loop_completo");
         if (audiosource.isPlaying != true)
         {
             
@@ -84,14 +84,14 @@ public class Music_Controller : MonoBehaviour
     public static void OnBossEnter()
     {
         audiosource.volume = 1;
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1(true) separado/boss1(true) parte 1");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1_true_separado/boss1_true_parte_1");
         audiosource.Play();
     }
     public static IEnumerator OnBossmidFight()
     {
         yield return new WaitUntil(() => audiosource.time > audiosource.clip.length - 0.1f);
         
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1(true) separado/boss1(true) parte 2");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1_true_separado/boss1_true_parte_2");
         audiosource.Play();
         //
     }
@@ -99,7 +99,7 @@ public class Music_Controller : MonoBehaviour
     {
         yield return new WaitUntil(() => audiosource.time > audiosource.clip.length - 0.1f);
         
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1(true) separado/boss1(true) climax");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1_true_separado/boss1_true_climax");
         audiosource.Play();
         //
     }
@@ -107,7 +107,7 @@ public class Music_Controller : MonoBehaviour
     {
         audiosource.Stop();
         
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1(true) separado/boss1(true) final no loop");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/Boss1_true_separado/boss1_true_final_no_loop");
         audiosource.Play();
         audiosource.loop = false;
     }

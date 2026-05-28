@@ -1,12 +1,13 @@
+using Analog;
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using Cinemachine;
 using TMPro;
-using Analog;
-using UnityEngine.UI;
+using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Cutscenemanagement : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Cutscenemanagement : MonoBehaviour
     GameObject d_box;                 // dialogue box
     TMP_Text d_text;               // dialogue text
     [SerializeField]GameObject[] hud;
-    [SerializeField]joystick joy;                   //
+    //[SerializeField]joystick joy;                   //
     Vector2 t_default;              // Transpose default
     Vector2 t_current;              // Transpose current
     public bool locked = false;     // Camera locked
@@ -30,6 +31,15 @@ public class Cutscenemanagement : MonoBehaviour
     Transform deathObj;
     static Vector3 vel = Vector3.zero;
 
+    //
+    private movimento movimento;
+    private Pause pause;
+    public bool movement_locked = false;
+
+    private void Awake()
+    {
+        pause = GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<Pause>();
+    }
 
     void Start()
     {
@@ -44,11 +54,14 @@ public class Cutscenemanagement : MonoBehaviour
         hud = GameObject.FindGameObjectsWithTag("Hud controls");
         end.SetActive(false);
 
+        movimento = GetComponent<movimento>();
+        //pause = GameObject.FindGameObjectWithTag("Pause Menu").GetComponent<Pause>();
+
         for (int i = 0; i < hud.Length; i++)
         {
             if (hud[i].name == "joystick")
             {
-                joy = hud[i].transform.GetChild(1).GetComponent<joystick>();
+                //joy = hud[i].transform.GetChild(1).GetComponent<joystick>();
             }
         }
     }
@@ -58,6 +71,7 @@ public class Cutscenemanagement : MonoBehaviour
     {
         transp.m_ScreenX = t_current.x;
         transp.m_ScreenY = t_current.y;
+        /*
         if(Input.touchCount > 0 && Input.GetTouch(0).position.y < Screen.height / 2 &&  PlayerPrefs.GetInt("pause") == 0)
         {
             Touch t = Input.GetTouch(0);
@@ -71,16 +85,16 @@ public class Cutscenemanagement : MonoBehaviour
                     //touched = false;
                     break;
             }
-        }
+        }*/
 
         
-        if(joy.t_camera != joy_stage)
+        if(movimento.t_camera != joy_stage)
         {
             if (!locked)
             {
-                Look(joy.t_camera);
+                Look(movimento.t_camera);
             }
-            joy_stage = joy.t_camera;
+            joy_stage = movimento.t_camera;
         }        
     }
 
@@ -163,10 +177,6 @@ public class Cutscenemanagement : MonoBehaviour
         }
     }
 
-
-   
-
-
     void Look(int i = 0, GameObject target = null)
     {
         switch (i)
@@ -192,20 +202,19 @@ public class Cutscenemanagement : MonoBehaviour
         }
     }
 
-
     void HudDisable(bool set)
     {
         for (int i = 0; i < hud.Length; i++)
         {
             if (set == false)
             {
-                Debug.Log("0");
-                joy.Stop(true);
+                //Debug.Log("0");
+                //joy.Stop(true);
             }
             else
             {
-                Debug.Log("2.5");
-                joy.Stop(false);
+                //Debug.Log("2.5");
+                //joy.Stop(false);
             }
 
             if (hud[i].name != "joystick")
@@ -219,6 +228,7 @@ public class Cutscenemanagement : MonoBehaviour
         running = true;
         touched = false;
         locked = true;
+        movement_locked = true;
         d_box.SetActive(true);
         HudDisable(false);
         switch (scene)
@@ -227,22 +237,22 @@ public class Cutscenemanagement : MonoBehaviour
                 if (!PlayerPrefs.HasKey("c1"))
                 {
                     Look(0,GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Ah, Tainara! Finalmente chegou. Pronta para come�ar? Quero ver o quanto voc� evoluiu esses dias."));
+                    StartCoroutine(RunDialogue("Ah, Tainara! Finalmente chegou. Pronta para começar? Quero ver o quanto você evoluiu esses dias."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Olha, eu j� pedi desculpas por aquele acidente com o jacar�. N�o precisava ter trocado o lugar de treino s� por isso. Eu consigo dar conta."));
+                    StartCoroutine(RunDialogue("Olha, eu já pedi desculpas por aquele acidente com o jacaré. Não precisava ter trocado o lugar de treino só por isso. Eu consigo dar conta."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Voc� tem que prestar mais aten��o da pr�xima vez para n�o confundir eles com um tronco de novo. Deixe desse medo bobo."));
+                    StartCoroutine(RunDialogue("Você tem que prestar mais atenção da próxima vez para não confundir eles com um tronco de novo. Deixe desse medo bobo."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Mas voc� fala isso por que n�o viu os dentes dele! Parece um lagarto gigante. Urgh!!"));
+                    StartCoroutine(RunDialogue("Mas você fala isso por que não viu os dentes dele! Parece um lagarto gigante. Urgh!!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -251,22 +261,22 @@ public class Cutscenemanagement : MonoBehaviour
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Relaxe crian�a. Voc� precisa praticar em outro ambiente tamb�m. E tenho meus motivos para estar aqui."));
+                    StartCoroutine(RunDialogue("Relaxe criança. Você precisa praticar em outro ambiente também. E tenho meus motivos para estar aqui."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Que motivos? � melhor que n�o tenham a ver com jacar�s e troncos."));
+                    StartCoroutine(RunDialogue("Que motivos? É melhor que não tenham a ver com jacarés e troncos."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Se voc� conseguir chegar no final podemos conversar."));
+                    StartCoroutine(RunDialogue("Se você conseguir chegar no final podemos conversar."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Ha! N�o se preocupe. Eu te espero l�."));
+                    StartCoroutine(RunDialogue("Ha! Não se preocupe. Eu te espero lá."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -275,24 +285,33 @@ public class Cutscenemanagement : MonoBehaviour
                 break;
             case 2:
                 if(!PlayerPrefs.HasKey("c2"))
-                { 
+                {
                     Look();
-                    StartCoroutine(RunDialogue("J� est� aqui? Voc� ainda tem que me explicar como voc� chega assim t�o r�pido."));
+                    StartCoroutine(RunDialogue("Tainara! Aqui em cima!"));
+                    
+                    yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
+
+                    Look(1, GameObject.FindGameObjectWithTag("Anhaga"));
+                    StartCoroutine(RunDialogue("Está indo muito bem. Antes de continuar quero te avisar algo."));
+
+                    yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
+                    Look();
+                    StartCoroutine(RunDialogue("Tudo bem... Mas como você já está aqui? Você ainda tem que me explicar como você chega assim tão rápido nos lugares."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(1, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Bem... Digamos que eu n�o tenho anima��o para andar."));
+                    StartCoroutine(RunDialogue("Bem... Digamos que eu não tenho animação para ficar andando, então venho de outra forma."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Mas o que raios isso quer dizer?"));
+                    StartCoroutine(RunDialogue("Mas o que isso quer dizer?"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(1, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("N�o importa. Eu fiz algo para voc�. Descendo aqui embaixo ter�o umas flores. Elas v�o salvar seu progresso e voc� vai voltar nelas se cair."));
+                    StartCoroutine(RunDialogue("Não importa. O que eu queria dizer é que fiz algo para você. Descendo aqui embaixo terão umas flores. Elas vão salvar seu progresso e você vai voltar nelas se cair."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -309,17 +328,17 @@ public class Cutscenemanagement : MonoBehaviour
                 if (!PlayerPrefs.HasKey("c3"))
                 {
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("O caminho foi bloqueado por estes espinhos. N�o vai ter como passar por aqui."));
+                    StartCoroutine(RunDialogue("O caminho foi bloqueado por estes espinhos. Não vai ter como passar por aqui."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Estes espinhos n�o estava sempre a�?"));
+                    StartCoroutine(RunDialogue("Estes espinhos não estava sempre aí?"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("N�o. J� usei este caminho antes. Algo fez estas vinhas crescerem mais do que deveriam."));
+                    StartCoroutine(RunDialogue("Não. Já usei este caminho antes. Algo fez estas vinhas crescerem mais do que deveriam."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -329,7 +348,7 @@ public class Cutscenemanagement : MonoBehaviour
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Voc� tem que se concentrar em terminar o seu treino. Use essas paredes e pule de uma para outra para subir como eu te ensinei. Te encontro l� em cima"));
+                    StartCoroutine(RunDialogue("Você tem que se concentrar em terminar o seu treino. Use essas paredes e pule de uma para outra para subir como eu te ensinei. Te encontro lá em cima"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -343,7 +362,7 @@ public class Cutscenemanagement : MonoBehaviour
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(2);
-                    StartCoroutine(RunDialogue("(Pule na parede clicando em pulo enquanto no ar encostando em uma parede)"));
+                    StartCoroutine(RunDialogue("(Salte na parede e pule mais uma vez antes de cair no chão para se propulsionar para alturas maiores. Você pode repetir isso até chegar no topo!)"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -355,27 +374,27 @@ public class Cutscenemanagement : MonoBehaviour
                 if (!PlayerPrefs.HasKey("c3.5"))
                 {
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Demorou mais do que eu imaginava. Ainda est� viva?"));
+                    StartCoroutine(RunDialogue("Demorou mais do que eu imaginava. Ainda está viva?"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Haha. N�o foi t�o dif�cil. Eu s� estava... Er... Me aquecendo."));
+                    StartCoroutine(RunDialogue("Haha. Não foi tão difícil. Eu só estava... Er... Me aquecendo."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Bem, j� que est� t�o pronta, vamos para um desafio de verdade com obst�culos vivos. O que acha?"));
+                    StartCoroutine(RunDialogue("Bem, já que está tão pronta, vamos para um desafio de verdade com obstáculos vivos. O que acha?"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Obst�culos vivos? Voc� quer dizer que eu vou ter que lutar contra animais?"));
+                    StartCoroutine(RunDialogue("Obstáculos vivos? Você quer dizer que eu vou ter que lutar contra animais?"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Sim. O caminho a frente est� cheio deles. Mas lembre-se que eles s�o vidas como voc�. Segure os seus golpes e apenas nocauteie eles."));
+                    StartCoroutine(RunDialogue("Sim. O caminho a frente est� cheio deles. Mas lembre-se que eles são vidas como você. Segure os seus golpes e apenas nocauteie eles."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -385,7 +404,7 @@ public class Cutscenemanagement : MonoBehaviour
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("(Use o bot�o de ataque para nocautear inimigos.)"));
+                    StartCoroutine(RunDialogue("(Use o botão de ataque para nocautear inimigos.)"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -397,37 +416,37 @@ public class Cutscenemanagement : MonoBehaviour
                 if (!PlayerPrefs.HasKey("c4"))
                 {
                     //Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Tainara!! Venha r�pido! Eu n�o tenho muito tempo!"));
+                    StartCoroutine(RunDialogue("Tainara!! Venha rápido! Eu não tenho muito tempo!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Anhag�?! O que houve?!"));
+                    StartCoroutine(RunDialogue("Anhagá?! O que houve?!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Tem alguma coisa de errada com a floresta. Eu estou sentindo minha liga��o com este plano se quebrando."));
+                    StartCoroutine(RunDialogue("Tem alguma coisa de errada com a floresta. Eu estou sentindo minha ligação com este plano se quebrando."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("Mas o qu�? Por qu�? O que foi que aconteceu?! Voc� n�o pode sumir assim!! Tem que haver uma forma de evitar isso!!!"));
+                    StartCoroutine(RunDialogue("Mas o quê? Por quê? O que foi que aconteceu?! Você não pode sumir assim!! Tem que haver uma forma de evitar isso!!!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("Sinto muito, mas n�o tem nada o que fazer. Apenas volte para a cabana!"));
+                    StartCoroutine(RunDialogue("Sinto muito, mas não tem nada o que fazer. Apenas volte para a cabana!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look();
-                    StartCoroutine(RunDialogue("O qu�?! Claro que n�o!! Eu irei descobrir o que aconteceu!! N�o vou deixar voc� sumir assim."));
+                    StartCoroutine(RunDialogue("O quê?! Claro que não!! Eu irei descobrir o que aconteceu!! Não vou deixar voc� sumir assim."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
                     Look(0, GameObject.FindGameObjectWithTag("Anhaga"));
-                    StartCoroutine(RunDialogue("N�o!! � muito perigoso. Os animais dessa regi�o foram corrompidos. Eles se transformaram em bestas agressivas. N�o � seguro. Volte agora!"));
+                    StartCoroutine(RunDialogue("Não!! É muito perigoso. Os animais dessa região foram corrompidos. Eles se transformaram em bestas agressivas. Não é seguro. Volte agora!"));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -440,7 +459,7 @@ public class Cutscenemanagement : MonoBehaviour
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
-                    StartCoroutine(RunDialogue("Eu vou descobrir o que est� acontecendo. N�o posso deixar voc� sumir. E esse tamb�m � minha floresta."));
+                    StartCoroutine(RunDialogue("Eu vou descobrir o que está acontecendo. Não posso deixar você sumir. E esse também é minha floresta."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -470,7 +489,7 @@ public class Cutscenemanagement : MonoBehaviour
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
-                    StartCoroutine(RunDialogue("Bem s� tem uma forma de descobrir."));
+                    StartCoroutine(RunDialogue("Bem só tem uma forma de descobrir."));
 
                     yield return new WaitUntil(() => !run); yield return new WaitUntil(() => touched); touched = false;
 
@@ -487,6 +506,7 @@ public class Cutscenemanagement : MonoBehaviour
             HudDisable(true);
             locked = false;
             running = false;
+            movement_locked = false;
         }
         else
         {
@@ -546,5 +566,19 @@ public class Cutscenemanagement : MonoBehaviour
     {
         PlayerPrefs.Save();
         SceneManager.LoadScene(0);
+    }
+
+    public void OnInteract(InputAction.CallbackContext _callbackContext)
+    {
+        if(_callbackContext.started && PlayerPrefs.GetInt("pause") == 0)
+            touched = true;
+    }
+
+    public void OnPause(InputAction.CallbackContext _callbackContext)
+    {
+        if (_callbackContext.started)
+        {
+            pause.TogglePause();
+        }
     }
 }

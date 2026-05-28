@@ -46,7 +46,7 @@ public  class Music_menu : MonoBehaviour
        
         if(audiosource.isPlaying != true)
         {
-            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu separado/menu(inicio)");
+            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu_separado/menu_inicio");
             audiosource.Play();
         }
 
@@ -133,10 +133,10 @@ public  class Music_menu : MonoBehaviour
             StartCoroutine(transicao());
             yield return new WaitUntil(() => audiosource.time > audiosource.clip.length - 0.1f);
 
-            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu separado/menu(meio)");
+            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu_separado/menu_meio");
             audiosource.Play();
             yield return new WaitUntil(() => audiosource.time > audiosource.clip.length - 0.1f);
-            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu separado/menu(loop calmo)");
+            audiosource.clip = Resources.Load<AudioClip>("Musicas/menu_separado/menu_loop_calmo");
             audiosource.Play();
             audiosource.loop = true;
 
@@ -145,7 +145,7 @@ public  class Music_menu : MonoBehaviour
     public static IEnumerator clique()
     {
         
-        audiosource.clip = Resources.Load<AudioClip>("Musicas/menu separado/menu(fim no loop)");
+        audiosource.clip = Resources.Load<AudioClip>("Musicas/menu_separado/menu_fim_no_loop");
         audiosource.loop = false;
         audiosource.Play();
         float t = Time.time + .73f;

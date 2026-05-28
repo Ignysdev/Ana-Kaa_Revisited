@@ -100,7 +100,7 @@ public class PorcoEspinho : MonoBehaviour
             gameObject.tag = "Untagged";
             gameObject.layer = 8;
             death = true;
-            audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Tatu/Porco espinho morrendo");
+            audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Tatu/Porco_espinho_morrendo");
             audioSource.loop = false;
             audioSource.Play();
             anim.SetBool("Death", true);
@@ -160,7 +160,7 @@ public class PorcoEspinho : MonoBehaviour
                 break;
             case 2:
                 anim.SetInteger("State", 2);
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Tatu/Corrida tatu corrompido");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Tatu/Corrida_tatu_corrompido");
                 audioSource.loop = true;
                 audioSource.Play();
                 if (!death)

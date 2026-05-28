@@ -11,13 +11,14 @@ public class Pause : MonoBehaviour
     static Vector3 vel = Vector3.zero;
 
     bool settings = false;
+    public bool paused = false;
 
     void Start()
     {
         PlayerPrefs.SetInt("pause", 0);
         Time.timeScale = 1;
         pauseMenu.SetActive(false);
-        pauseButton.SetActive(true);
+        //pauseButton.SetActive(true);
 
         deathObj = GameObject.FindGameObjectWithTag("deathHud").transform;
     }
@@ -25,6 +26,7 @@ public class Pause : MonoBehaviour
     
     public void PauseGame()
     {
+        paused = true;
         PlayerPrefs.SetInt("pause", 1);
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
@@ -32,14 +34,15 @@ public class Pause : MonoBehaviour
         pauseMenu.transform.GetChild(3).gameObject.SetActive(true);
         pauseMenu.transform.GetChild(4).gameObject.SetActive(false);
         settings = false;
-        pauseButton.SetActive(false);
+        //pauseButton.SetActive(false);
     }
 
     public void PlayGame()
     {
+        paused = false;
         PlayerPrefs.SetInt("pause", 0);
         pauseMenu.SetActive(false);
-        pauseButton.SetActive(true);
+        //pauseButton.SetActive(true);
         Time.timeScale = 1;
     }
 
@@ -77,5 +80,13 @@ public class Pause : MonoBehaviour
         PlayerPrefs.SetInt("pause", 0);
         PlayerPrefs.Save();
         SceneManager.LoadScene(0);
+    }
+
+    public void TogglePause()
+    {
+        if(!paused)
+            PauseGame();
+        else
+            PlayGame();
     }
 }

@@ -10,14 +10,14 @@ namespace Analog{
         bool cameraCoold = false;
         bool cc = false;
         public int t_camera = 0;
-        public bool t_enable = true;
+        //public bool t_enable = true;
         Vector2 posicaoinicial;
         bool clique = false;
         Collider2D col;
        [SerializeField] static public float horizontal, vertical;
         RectTransform movimento;
          public GameObject bolaext;
-        Cutscenemanagement cutscene;
+        //Cutscenemanagement cutscene;
 
         bool cut = false;
      
@@ -27,7 +27,7 @@ namespace Analog{
         {
             movimento = GetComponent<RectTransform>();
             col = bolaext.GetComponent<Collider2D>();
-            cutscene = GameObject.FindGameObjectWithTag("Player").GetComponent<Cutscenemanagement>();
+            //cutscene = GameObject.FindGameObjectWithTag("Player").GetComponent<Cutscenemanagement>();
         }
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Analog;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class movimento : MonoBehaviour
 {
@@ -80,6 +81,12 @@ public class movimento : MonoBehaviour
     bool alive = true;
     bool dying = false;
     bool anima_andar;
+
+        // Revisit
+    private Vector2 movementInput;
+    public int t_camera = 0;
+    private bool cameraCoold = false;
+    private bool cc = false;
     #endregion
 
     //  //  // FUN��ES PRINCIPAIS //  //  //
@@ -116,7 +123,6 @@ public class movimento : MonoBehaviour
         StartCoroutine(Death(true));
     }
 
-
     void FixedUpdate()
     {
         
@@ -134,7 +140,7 @@ public class movimento : MonoBehaviour
             //  Se no ch�o seta a vari�vel e ativa a toler�ncia de pulo.
             if(liberaChao != true)
             {
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Queda grama");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Tainara/Queda_grama");
                 audioSource.loop = false;
 
                 audioSource.Play();
@@ -168,7 +174,7 @@ public class movimento : MonoBehaviour
             animin.SetBool("jumping", true);
             animin.SetBool("walking", false);
             animin.SetBool("attacking", false);
-            audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Pulo");
+            audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Tainara/Pulo");
             audioSource.loop = false;
             audioSource.Play();
             //  Caso tenha apertado em pulo e estado no ch�o em um tempo menor que a tolerancia de pulo, pule e ajuste as vari�veis.
@@ -205,17 +211,17 @@ public class movimento : MonoBehaviour
         }
 
         // MOVIMENTO
-        if(joystick.horizontal > 1 && alive || joystick.horizontal < -1 && alive)
+        if(movementInput.x > 0.2 && alive || movementInput.x < -0.2 && alive)
         {
             int sign = -1;
-            if(joystick.horizontal > 0)
+            if(movementInput.x > 0)
             {
                 sign = 1;
             }
             if(liberaChao == true)
             {
                 anima_andar = true;
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/Correndo grama");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Tainara/Correndo_grama");
                 audioSource.loop = true;
                 if(audioSource.isPlaying == false)
                 {
@@ -227,7 +233,7 @@ public class movimento : MonoBehaviour
 
             Vector3 velocidade = Vector3.zero;
 
-            if (Mathf.Abs(joystick.horizontal) > 2.75f)
+            if (Mathf.Abs(movementInput.x) > 0.75f)
             {
                 velocidade = new Vector2(5 * sign * speed, rb.linearVelocity.y);   //  Vetor da velocidade.
             }
@@ -242,12 +248,14 @@ public class movimento : MonoBehaviour
             if(alive)
             rb.linearVelocity = Vector3.SmoothDamp(rb.linearVelocity, new Vector3(0, rb.linearVelocity.y), ref vel, s);  //  Aplica��o da suaviza��o.
         }
-       if(joystick.horizontal == 0 && anima_andar == true || liberaChao == false && anima_andar == true)
+        if(movementInput.x == 0 && anima_andar == true || liberaChao == false && anima_andar == true)
         {
             audioSource.Stop();
             audioSource.loop = false;
             anima_andar = false;
         }
+        
+
             // Corte de pulo
         if (jumpCut && rb.linearVelocity.y > 0 && alive)
         {
@@ -267,7 +275,6 @@ public class movimento : MonoBehaviour
         Dash(true);
     }
 
-
     private void Update()
     {
         // ELIMINAR EXPLOIT
@@ -282,7 +289,7 @@ public class movimento : MonoBehaviour
             tiro_time += Time.deltaTime;
         }
         // VIRAR PERSONAGEM
-        if (joystick.horizontal > 1 /*&& ativajoy == true*/)
+        if (movementInput.x > 0.2 /*&& ativajoy == true*/)
         {
             //  Se estiver andando para a direita rode a anima��o.
             animin.SetBool("walking", true);
@@ -292,7 +299,7 @@ public class movimento : MonoBehaviour
                 Flip();
             }
         }
-        else if (joystick.horizontal < -1 /*&& ativajoy == true*/)
+        else if (movementInput.x < -0.2 /*&& ativajoy == true*/)
         {
             //  Se estiver andando para a esquerda rode a anima��o.
             animin.SetBool("walking", true);
@@ -307,6 +314,46 @@ public class movimento : MonoBehaviour
             //  Se estiver parado, pare a anima��o de andar.
             animin.SetBool("walking", false);
         }
+
+        if (cutscene.movement_locked)
+            movementInput = Vector2.zero;
+
+        if (PlayerPrefs.GetInt("pause") == 1)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+
+    }
+
+    public void OnMove(InputAction.CallbackContext _callbackContext)
+    {
+        if (!cutscene.movement_locked && PlayerPrefs.GetInt("pause") == 0)
+        {
+            movementInput = _callbackContext.ReadValue<Vector2>();
+            CameraMovement();
+        }
+        else 
+        {
+            movementInput = Vector2.zero;
+        }
+    }
+
+    public void OnJump(InputAction.CallbackContext _callbackContext)
+    {
+        if (!cutscene.movement_locked && PlayerPrefs.GetInt("pause") == 0)
+        {
+            if(_callbackContext.started)
+                Pulo(true);
+            if (_callbackContext.canceled)
+                Pulo(false);
+        }
+    }
+
+    public void OnAttack(InputAction.CallbackContext _callbackContext)
+    {
+        if (_callbackContext.started && !cutscene.movement_locked && PlayerPrefs.GetInt("pause") == 0)
+            Ataque();
     }
     #endregion
 
@@ -323,14 +370,13 @@ public class movimento : MonoBehaviour
         transform.localScale = theScale;
     }
 
-
     public void Pulo(bool on)
     {
         if (on)
         {
             //  Se apertado, atualiza vari�vel de apertando.
             jumpCut = false;
-            if (joystick.vertical > -2.75f)
+            if (movementInput.y > -0.75f)
             {
                 //  Se n�o estiver olhando para baixo pule antes da toler�ncia acabar.
                 prePulo = toleranciaPulo;
@@ -356,23 +402,6 @@ public class movimento : MonoBehaviour
         //�2
     }
 
-    public void Ataque_som1()
-    {
-        audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/ataque leve");
-        audioSource.loop = false;
-        
-            audioSource.Play();
-        
-    }
-    public void Ataque_som2()
-    {
-        audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Tainara/ataque pesado");
-        audioSource.loop = false;
-
-        audioSource.Play();
-
-    }
-
     public void Ataque()
     {
         //  Se bot�o de ataque apertado, rode anima��o e ligue colisos de ataque.
@@ -382,6 +411,23 @@ public class movimento : MonoBehaviour
 
     }
 
+    public void Ataque_som1()
+    {
+        audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Tainara/ataque_leve");
+        audioSource.loop = false;
+        
+            audioSource.Play();
+        
+    }
+
+    public void Ataque_som2()
+    {
+        audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Tainara/ataque_pesado");
+        audioSource.loop = false;
+
+        audioSource.Play();
+
+    }
 
     public void Tiro()
     {
@@ -399,7 +445,6 @@ public class movimento : MonoBehaviour
         animin.SetBool("attacking", false);
         attack.enabled = false;
     }
-
 
     public void Dash(bool mode)
     {
@@ -493,6 +538,55 @@ public class movimento : MonoBehaviour
         }
     }
 
+    void CameraMovement()
+    {
+        if (movementInput.y > 0.75f || movementInput.y < -0.75f)
+        {
+            if (cameraCoold)
+            {
+                if (movementInput.y > 0)
+                {
+                    if (t_camera != 2)
+                    {
+                        //cutscene.GetCutscene("LookUpJoy", 2);
+                        t_camera = 2;
+                    }
+                }
+                else
+                {
+                    if (t_camera != 1)
+                    {
+                        //cutscene.GetCutscene("LookDownJoy", 2);
+                        t_camera = 1;
+                    }
+                }
+            }
+            else
+            {
+                if (!cc)
+                {
+                    StartCoroutine(CameraCooldown());
+                }
+            }
+        }
+        else
+        {
+            cc = false;
+            cameraCoold = false;
+            if (t_camera != 0)
+            {
+                t_camera = 0;
+            }
+        }
+    }
+
+    IEnumerator CameraCooldown()
+    {
+        cc = true;
+        yield return new WaitForSeconds(1.3f);
+        cameraCoold = true;
+
+    }
 
     //�3
 

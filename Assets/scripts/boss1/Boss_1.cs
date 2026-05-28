@@ -46,13 +46,13 @@ public class Boss_1 : MonoBehaviour
     public void ongiro()
     {
 
-        audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Carbunculo/Ataque 2/Giro");
+        audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Carbunculo/Ataque_2/Giro");
         audioSource.loop = true;
         audioSource.Play();
     }
     public void onbatida()
     {
-        audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Carbunculo/Ataque 2/ataque");
+        audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Carbunculo/Ataque_2/ataque");
         audioSource.loop = false;
         audioSource.Play();
     }
@@ -76,11 +76,11 @@ public class Boss_1 : MonoBehaviour
         switch (seletor)
         {
             case 1:
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Carbunculo/Melhor preparação");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Carbunculo/Melhor_preparação");
                 audioSource.Play();
                 animator.SetBool("cuspe", true);
                 yield return new WaitUntil(() => animator.GetBool("cuspe") == false);
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Carbunculo/Rodrigo cuspindo");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Carbunculo/Rodrigo_cuspindo");
                 audioSource.Play();
                 Instantiate(ataque_1, transform.position, Quaternion.identity);
                 animator.SetBool("cuspe", false);
@@ -91,7 +91,7 @@ public class Boss_1 : MonoBehaviour
             case 2:
                 yield return new WaitForSeconds(2f);
                 animator.SetBool("ataque2", true);
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Carbunculo/Ataque 2/Pulo");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Carbunculo/Ataque_2/Pulo");
                 audioSource.loop = false;
                 audioSource.Play();
                 Vector3 posicao = GameObject.Find("Personagem").transform.position;

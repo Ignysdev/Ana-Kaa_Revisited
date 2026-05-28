@@ -175,14 +175,14 @@ public class Coral_Corrompida : MonoBehaviour
         {
             if (!detected && !attack)
             {
-                 Debug.Log("11");
+                 //Debug.Log("11");
                 Flip();
             }
             else
             {
                 if (!attack)
                 {
-                     Debug.Log("12");
+                     //Debug.Log("12");
                     state = 0;
                 }
             }
@@ -194,14 +194,14 @@ public class Coral_Corrompida : MonoBehaviour
         {
             case 0:
                 anim.SetInteger("State", 0);
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Idle corrompida");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/Idle_corrompida");
                 audioSource.loop = true;
                 audioSource.Play();
                 rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
                 break;
             case 1:
                 anim.SetInteger("State", 1);
-                audioSource.clip = Resources.Load<AudioClip>("Efeitos sonoros/Mobs/Coral/Idle corrompida");
+                audioSource.clip = Resources.Load<AudioClip>("Efeitos_sonoros/Mobs/Coral/Idle_corrompida");
                 audioSource.loop = true;
                 audioSource.Play();
                 if (!death)
